@@ -36,6 +36,14 @@ public class Shopping {
         }
         return total;
     }
+    public double getDiscountPrice(double discountRate) {
+
+        var total = 0;
+        for (Item item : items) {
+            total += item.getPrice() * (1 - discountRate);
+        }
+        return total;
+    }
 
     public void printReceipt() {
         System.out.println("List of Items");

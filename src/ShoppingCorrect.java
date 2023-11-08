@@ -12,13 +12,6 @@ public class ShoppingCorrect {
         this.items.remove(it);
     }
 
-    public float getTotal() {
-        var total = 0;
-        for (Item item : items) {
-            total += item.getPrice();
-        }
-        return total;
-    }
     public List<Item> getItems() {
         return items;
     }
@@ -27,34 +20,47 @@ public class ShoppingCorrect {
 }
 
 class Payment {
-    private float amountPaid;
+    private double amountPaid;
     private String paymentMethod;
-
     private String receitptNo;
     private ShoppingCorrect cart;
+    private PricingStrategy pricingStrategy;
     
-    public Payment(Float amount, String receiptNo, String method, ShoppingCorrect cart) {
+    public Payment(double amount, String receiptNo, String method, ShoppingCorrect cart, PricingStrategy ps) {
         this.amountPaid = amount;
         this.paymentMethod = method;
         this.receitptNo = receiptNo;
         this.cart = cart;
+        this.pricingStrategy = ps;
     }
+    public double getTotal() {
+        var total = 0;
+        for (Item item : cart.getItems()) {
+            total += pricingStrategy.calculatePrice(item);
+        }
+        return total;
+    }
+    
     public void printReceipt() {
         System.out.println("List of Items");
         System.out.println();
     
-        for (Item item : cart.getItems) {
+        for (Item item : cart.getItems()) {
            System.out.println(item.getName() + " " + item.getPrice()); 
         }
         System.out.println(this.getTotal());
     }
+
+    public void setPricingStrategy(PricingStrategy pricingStrategy) {
+        this.pricingStrategy = pricingStrategy;
+}
 }
 
-public class Item {
+class Item {
     private String name;
-    private float price;
+    private double price;
 
-    Item(String name_, Float price_) {
+    Item(String name_, double price_) {
         this.price = price_;
         this.name = name_;
     }
@@ -62,11 +68,11 @@ public class Item {
     public String getName() {
         return name;
     }
-    public float getPrice() {
+    public double getPrice() {
         return price;
     }
 }
-public class App {
+class App {
     public static void main(String[] args) throws Exception {
         System.out.println("Hello, World!");
         
