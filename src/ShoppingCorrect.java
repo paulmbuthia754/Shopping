@@ -1,4 +1,6 @@
 import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 public class ShoppingCorrect {
     private List<Item> items;
@@ -13,7 +15,7 @@ public class ShoppingCorrect {
     }
 
     public List<Item> getItems() {
-        return items;
+        return items.stream().collect(Collectors.toList());
     }
     
 
