@@ -1,3 +1,5 @@
+package OCP;
+
 public interface PricingStrategy {
 
     double calculatePrice(Item item);

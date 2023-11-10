@@ -1,9 +1,11 @@
+package SCP;
+
 import java.util.ArrayList;
 import java.util.List;
-public class Shopping {
+import java.util.stream.Collectors;
+
+public class ShoppingSRP {
     private List<Item> items = new ArrayList<Item>();
-    
-    private String paymentMethod;
 
     public void addItem(Item it) {
         this.items.add(it);
@@ -14,16 +16,22 @@ public class Shopping {
     }
 
     public List<Item> getItems() {
-        return this.items;
+        return items.stream().collect(Collectors.toList());
     }
-    
-    public void makePayment(String method) {
-        this.paymentMethod = method;
+
+}
+
+class Payment {
+    private ShoppingSRP cart;
+    private String paymentMethod;
+
+    public Payment(ShoppingSRP cart) {
+        this.cart = cart;
     }
 
     public double getTotalPrice() {
         var total = 0;
-        for (Item item : items) {
+        for (Item item : cart.getItems()) {
             total += item.getPrice();
         }
         return total;
@@ -31,26 +39,31 @@ public class Shopping {
 
     public double getNormalPrice() {
         var total = 0;
-        for (Item item : items) {
+        for (Item item : cart.getItems()) {
             total += item.getPrice();
         }
         return total;
     }
+
     public double getDiscountPrice(double discountRate) {
 
         var total = 0;
-        for (Item item : items) {
+        for (Item item : cart.getItems()) {
             total += item.getPrice() * (1 - discountRate);
         }
         return total;
     }
 
+    public void makePayment(String method) {
+        this.paymentMethod = method;
+    }
+
     public void printReceipt() {
         System.out.println("List of Items");
         System.out.println();
-    
-        for (Item item : items) {
-           System.out.println(item.getName() + " " + item.getPrice()); 
+
+        for (Item item : cart.getItems()) {
+            System.out.println(item.getName() + " " + item.getPrice());
         }
         System.out.println(this.getTotalPrice());
     }
@@ -60,7 +73,7 @@ class Item {
     private String name;
     private double price;
 
-    Item(String name_, Double price_) {
+    Item(String name_, double price_) {
         this.price = price_;
         this.name = name_;
     }
@@ -68,18 +81,18 @@ class Item {
     public String getName() {
         return name;
     }
+
     public double getPrice() {
         return price;
     }
 }
 
-class App1 {
-    public static void main(String[] args) {
-        
+class AppSRP {
+    public static void main(String[] args) throws Exception {
         Item item = new Item("chair", 2000.00);        
         Item item1 = new Item("table", 4000.00);
 
-        Shopping shopping = new Shopping();
+        ShoppingSRP shopping = new ShoppingSRP();
         shopping.addItem(item);        
         shopping.addItem(item1);
 
@@ -91,13 +104,12 @@ class App1 {
         }     
 
         System.out.println("--NORMAL PRICES--");
-        var np = shopping.getNormalPrice();
-        System.out.println(np);
+        Payment payment = new Payment(shopping);
+        System.out.println(payment.getNormalPrice());
         System.out.println("--END NORMAL PRICES--");         
         
         System.out.println("--DISCOUNT PRICES--");   
-        var dp = shopping.getDiscountPrice(.1);
-        System.out.println(dp);     
+        System.out.println(payment.getDiscountPrice(.1));     
         System.out.println("--END DISCOUNT PRICES--"); 
 
 
